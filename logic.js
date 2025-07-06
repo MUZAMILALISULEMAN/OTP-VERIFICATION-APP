@@ -99,12 +99,16 @@
         // Event Listeners
         showOtpSection.addEventListener('click', showOtpForm);
         showEmailSection.addEventListener('click', showEmailForm);
-        
+        function isValidEmail(email) {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return pattern.test(email);
+}
         // Simulated API calls for demo purposes
         sendOtpBtn.addEventListener('click', async () => {
+            
             const email = emailInput.value;
             
-            if (!email || !email.includes('@')) {
+            if (!email || !isValidEmail(email)) {
                 showToast('error', 'Invalid Email', 'Please enter a valid email address');
                 return;
             }
@@ -124,8 +128,9 @@
         if(resp.status  === "success"){
             showToast('success', 'OTP', 'Successfully, Initiated An Account; Verify OTP');
         }
-        clearFields();
+        // clearFields();
         showOtpForm(false);
+        console.log("FPP");
         
         
         })

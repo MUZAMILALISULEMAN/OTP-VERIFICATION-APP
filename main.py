@@ -18,7 +18,7 @@ from fastapi import FastAPI,Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 Base = declarative_base()
-
+from email_validator import validate_email, EmailNotValidError
 class OTPRequest(Base):
     __tablename__ = "otp_requests"
 
@@ -68,9 +68,6 @@ app.add_middleware(
 
 @app.post("/submit")
 def submit(data:EmailRequest,db:Session = Depends(getDB)):
-
-    
-
     stmt =Update(OTPRequest).where(OTPRequest.email == data.email).values(is_active = False)
     db.execute(stmt)
     db.commit()
@@ -79,6 +76,9 @@ def submit(data:EmailRequest,db:Session = Depends(getDB)):
     payload = OTPRequest(email=data.email,otp_code=otpCode,expires_at=expires_at)
     db.add(payload)
     db.commit()
+
+
+
 
     postman = yagmail.SMTP(user=sender_email,password=app_password)
     postman.send(
