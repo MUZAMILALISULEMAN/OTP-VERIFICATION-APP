@@ -1,341 +1,194 @@
- /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+
+        let EMAIL = null;
+        // DOM Elements
+        const emailSection = document.getElementById('emailSection');
+        const otpSection = document.getElementById('otpSection');
+        const emailInput = document.getElementById('email');
+        const emailForOtpInput = document.getElementById('emailForOtp');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const showOtpSection = document.getElementById('showOtpSection');
+        const showEmailSection = document.getElementById('showEmailSection');
+        const resendOtp = document.getElementById('resendOtp');
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const toastContainer = document.querySelector('.toast-container');
+        
+        // Show OTP section
+        function showOtpForm(isBack=true) {
+            if(isBack){
+                EMAIL = "";
+            }
+            emailSection.style.display = 'none';
+            otpSection.style.display = 'block';
         }
         
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #ff6b6b;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --success: #06d6a0;
-            --error: #ef476f;
-            --gray: #8d99ae;
-            --border-radius: 12px;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        // Show email section
+        function showEmailForm() {
+            clearFieldsVerification();
+            otpSection.style.display = 'none';
+            emailSection.style.display = 'block';
+        }
+        function clearFields(){
+            emailInput.value = "";
+        }
+        function clearFieldsVerification(){
+              otpInputs.forEach(input => {
+                input.value = "";
+            });
         }
         
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        // Handle OTP input navigation
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                if (input.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+        
+        // Show toast message
+        function showToast(type, title, message) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icon = type === 'success' ? '✓' : '✕';
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icon}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close">&times;</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // Close toast on button click
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            });
+            
+            // Auto remove toast after 5 seconds
+            setTimeout(() => {
+                if (toast.classList.contains('show')) {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }
+            }, 5000);
         }
         
-        /* Card Container */
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            position: relative;
-        }
+        // Event Listeners
+        showOtpSection.addEventListener('click', showOtpForm);
+        showEmailSection.addEventListener('click', showEmailForm);
         
-        /* Header Section */
-        .header {
-            background: linear-gradient(to right, var(--primary), var(--primary-dark));
-            color: white;
-            text-align: center;
-            padding: 40px 30px;
-            position: relative;
-            overflow: hidden;
-        }
+        // Simulated API calls for demo purposes
+        sendOtpBtn.addEventListener('click', async () => {
+            const email = emailInput.value;
+            
+            if (!email || !email.includes('@')) {
+                showToast('error', 'Invalid Email', 'Please enter a valid email address');
+                return;
+            }
+            EMAIL  = email;
+            
+            //CALL
+            const response = await fetch("http://127.0.0.1:8000/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ "email":email })
+        });
         
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-        }
         
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -80px;
-            left: -30px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
+        const resp = await response.json()
+        if(resp.status  === "success"){
+            showToast('success', 'OTP', 'Successfully, Initiated An Account; Verify OTP');
         }
+        clearFields();
+        showOtpForm(false);
         
-        .logo {
-            position: relative;
-            z-index: 2;
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
         
-        .logo i {
-            font-size: 40px;
-        }
+        })
         
-        h1 {
-            position: relative;
-            z-index: 2;
-            font-size: 28px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .subtitle {
-            position: relative;
-            z-index: 2;
-            font-size: 16px;
-            opacity: 0.9;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-        
-        /* Form Section */
-        .form-container {
-            padding: 40px 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark);
-            font-weight: 500;
-            font-size: 15px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: var(--border-radius);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: var(--border-radius);
-            background: var(--primary);
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-        
-        .btn-secondary:hover {
-            background: #f0f3ff;
-        }
-        
-        /* OTP Inputs */
-        .otp-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-        
-        .otp-input {
-            width: 55px;
-            height: 55px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 600;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-        }
-        
-        .otp-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        /* Form States */
-        #otpSection {
-            display: none;
-        }
-        
-        .switch-form {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--gray);
-        }
-        
-        .switch-form a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        
-        /* Toast Messages */
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-            max-width: 350px;
-            width: 100%;
-        }
-        
-        .toast {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-            padding: 16px 20px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
-        }
-        
-        .toast.show {
-            transform: translateX(0);
-        }
-        
-        .toast::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 6px;
-        }
-        
-        .toast-success::before {
-            background: var(--success);
-        }
-        
-        .toast-error::before {
-            background: var(--error);
-        }
-        
-        .toast-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 14px;
-            color: white;
-        }
-        
-        .toast-success .toast-icon {
-            background: var(--success);
-        }
-        
-        .toast-error .toast-icon {
-            background: var(--error);
-        }
-        
-        .toast-content {
-            flex: 1;
-        }
-        
-        .toast-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--dark);
-        }
-        
-        .toast-message {
-            font-size: 14px;
-            color: var(--gray);
-        }
-        
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--gray);
-            cursor: pointer;
-            font-size: 18px;
-            margin-left: 10px;
-            padding: 0;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid #edf2f7;
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 500px) {
-            .container {
-                max-width: 100%;
+        verifyOtpBtn.addEventListener('click', async() => {
+            let otp = '';
+            otpInputs.forEach(input => {
+                otp += input.value;
+            });
+            
+            if (otp.length !== 6) {
+                showToast('error', 'Invalid OTP', 'Please enter the complete 6-digit code');
+                return;
+            }
+            if(EMAIL == null){
+                showToast('error', 'OTP Failure', 'Unable to Sent OTP, Please Enter the Email');
+                return
             }
             
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .form-container {
-                padding: 30px 20px;
-            }
-            
-            .otp-input {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .toast-container {
-                max-width: 90%;
-                left: 5%;
-                right: 5%;
-                bottom: 20px;
-            }
+            // Simulate API call to /verify-otp
+            const response = await fetch("http://127.0.0.1:8000/verify", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ "email":EMAIL,"otp_code":otp})
+        });
+        
+        
+        const resp = await response.json()
+        if(resp.status  === "success"){
+            showToast('success', 'OTP Verification', 'Code has been Verified');
+        }else{
+            showToast('error', 'OTP Rejection', 'Wrong OTP, Try Again');
         }
+        clearFieldsVerification();
+        
+        
+        
+    })
+    
+    resendOtp.addEventListener('click', async() => {
+            if(EMAIL == null){
+
+                showToast('error', 'OTP Resent Failure', 'Unable to Sent OTP, Please Enter the Email');
+                return
+            }
+            const response = await fetch("http://127.0.0.1:8000/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                    body: JSON.stringify({ "email":EMAIL })
+            });
+            
+            
+            const resp = await response.json()
+    
+            
+            if(resp.status  === "success"){
+                    showToast('success', 'OTP Resent', 'A new verification code has been sent to your email');
+            }
+            
+        });
+        // Initialize
+        showEmailForm();
