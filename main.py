@@ -33,7 +33,7 @@ class OTPRequest(Base):
     def is_expired(self):
         return datetime.utcnow() > self.expires_at
 
-engine  = create_engine("mysql+pymysql://root:%21%40%23muzzy2006@localhost:3306/dbtest")
+engine = create_engine("sqlite:///./otp.db", connect_args={"check_same_thread": False})
 session = sessionmaker(autoflush=False,autocommit=False,bind=engine)
 Base.metadata.create_all(bind=engine)
 
