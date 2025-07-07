@@ -15,16 +15,15 @@
         const toastContainer = document.querySelector('.toast-container');
         
         // Show OTP section
-        function showOtpForm(isBack=true) {
-            if(isBack){
-                EMAIL = "";
-            }
+        function showOtpForm() {
+            
             emailSection.style.display = 'none';
             otpSection.style.display = 'block';
         }
         
         // Show email section
         function showEmailForm() {
+            EMAIL = null;
             clearFieldsVerification();
             otpSection.style.display = 'none';
             emailSection.style.display = 'block';
@@ -128,8 +127,8 @@
         if(resp.status  === "success"){
             showToast('success', 'OTP', 'Successfully, Initiated An Account; Verify OTP');
         }
-        // clearFields();
-        showOtpForm(false);
+        clearFields();
+        showOtpForm();
         
         
         })
