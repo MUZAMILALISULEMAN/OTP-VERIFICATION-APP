@@ -58,7 +58,7 @@ def getDB():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],              # 🔐 only allow these origins
+    allow_origins=["https://muzamilalisuleman.github.io/"],              # 🔐 only allow these origins
     allow_credentials=True,
     allow_methods=["*"],                # GET, POST, etc.
     allow_headers=["*"],                # Accept, Content-Type, Authorization, etc.
