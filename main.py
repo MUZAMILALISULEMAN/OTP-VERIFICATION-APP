@@ -8,10 +8,9 @@ def generateOTP():
         otp+=str(chr(49+random.randint(0,8)))
     return otp
 
-# Replace with your email`` and app password
+
 sender_email = os.getenv("EMAIL") 
 app_password = os.getenv("EMAIL-KEY") 
-# 16-character code from Google
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Boolean, DateTime,Select,Update
 from sqlalchemy.orm import declarative_base,sessionmaker,Session
@@ -20,7 +19,6 @@ from fastapi import FastAPI,Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 Base = declarative_base()
-from email_validator import validate_email, EmailNotValidError
 class OTPRequest(Base):
     __tablename__ = "otp_requests"
 
