@@ -130,7 +130,7 @@
         }
         // clearFields();
         showOtpForm(false);
-        console.log("FPP");
+
         
         
         })
