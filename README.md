@@ -4,7 +4,9 @@ This is a full-stack OTP (One-Time Password) verification system built using **F
 
 ---
 
-![Preview](preview.png)
+<p align="center">
+  <img src="preview.png" alt="Preview" width="400" height="300">
+</p>
 
 ## 🚀 Live Demo
 
