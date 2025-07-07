@@ -1,5 +1,6 @@
 import yagmail
 import random 
+import os
 
 def generateOTP():
     otp = ''
@@ -8,8 +9,9 @@ def generateOTP():
     return otp
 
 # Replace with your email`` and app password
-sender_email = 'muzamil.ali1099@gmail.com'
-app_password = '************'  # 16-character code from Google
+sender_email = os.getenv("EMAIL") 
+app_password = os.getenv("EMAIL-KEY") 
+# 16-character code from Google
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Boolean, DateTime,Select,Update
 from sqlalchemy.orm import declarative_base,sessionmaker,Session
@@ -64,10 +66,10 @@ app.add_middleware(
     allow_headers=["*"],                # Accept, Content-Type, Authorization, etc.
 )
 
-
-
 @app.post("/submit")
 def submit(data:EmailRequest,db:Session = Depends(getDB)):
+
+    
     stmt =Update(OTPRequest).where(OTPRequest.email == data.email).values(is_active = False)
     db.execute(stmt)
     db.commit()
@@ -86,14 +88,12 @@ def submit(data:EmailRequest,db:Session = Depends(getDB)):
             subject="SecureAuth OTP Verification",
             contents=f"Your OTP is {otpCode}"
         )
-
-
-    
     return {"status":"success"}
 
 
+
 @app.post("/verify")
-def submit(data:OTPInfo,db:Session = Depends(getDB)):
+def verify(data:OTPInfo,db:Session = Depends(getDB)):
     
     stmt =Select(OTPRequest).order_by(OTPRequest.created_at.desc()).where(OTPRequest.email == data.email,OTPRequest.otp_code == data.otp_code)
     entry = db.execute(stmt).first()
