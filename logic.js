@@ -107,7 +107,7 @@
             
             const email = emailInput.value;
             
-            if (!email || !isValidEmail(email)) {
+            if (!email || email == "" || !isValidEmail(email)) {
                 showToast('error', 'Invalid Email', 'Please enter a valid email address');
                 return;
             }
