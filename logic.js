@@ -115,7 +115,7 @@
             EMAIL  = email;
             
             //CALL
-            const response = await fetch("http://127.0.0.1:8000/submit", {
+            const response = await fetch("https://otp-verification-app-07q2.onrender.com/submit", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -151,7 +151,7 @@
             }
             
             // Simulate API call to /verify-otp
-            const response = await fetch("http://127.0.0.1:8000/verify", {
+            const response = await fetch("https://otp-verification-app-07q2.onrender.com/verify", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json"
@@ -178,7 +178,7 @@
                 showToast('error', 'OTP Resent Failure', 'Unable to Sent OTP, Please Enter the Email');
                 return
             }
-            const response = await fetch("http://127.0.0.1:8000/submit", {
+            const response = await fetch("https://otp-verification-app-07q2.onrender.com/submit", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
