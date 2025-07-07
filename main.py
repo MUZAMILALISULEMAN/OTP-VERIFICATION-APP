@@ -9,7 +9,7 @@ def generateOTP():
 
 # Replace with your email`` and app password
 sender_email = 'muzamil.ali1099@gmail.com'
-app_password = 'sbjdioujwpqsdzcl'  # 16-character code from Google
+app_password = '************'  # 16-character code from Google
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Boolean, DateTime,Select,Update
 from sqlalchemy.orm import declarative_base,sessionmaker,Session
