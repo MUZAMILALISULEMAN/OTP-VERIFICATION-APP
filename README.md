@@ -4,6 +4,8 @@ This is a full-stack OTP (One-Time Password) verification system built using **F
 
 ---
 
+![Preview](https://raw.githubusercontent.com/muzamilalisuleman/OTP-VERIFICATION-APP/preview.png)
+
 ## 🚀 Live Demo
 
 👉 [Try the Live App](https://muzamilalisuleman.github.io/OTP-VERIFICATION-APP/)
