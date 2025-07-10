@@ -33,7 +33,7 @@ class OTPRequest(Base):
     def is_expired(self):
         return datetime.utcnow() > self.expires_at
 
-engine = create_engine("postgresql+psycopg2://postgres:hello123@db.lkuvnupemcccfkvrtthw.supabase.co:5432/postgres")
+engine = create_engine("postgresql+psycopg2://postgres.lkuvnupemcccfkvrtthw:hello123@aws-0-ap-south-1.pooler.supabase.com:5432/postgres")
 session = sessionmaker(autoflush=False,autocommit=False,bind=engine)
 Base.metadata.create_all(bind=engine)
 
